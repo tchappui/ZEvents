@@ -95,7 +95,7 @@ class Event:
         self.name = 'Generic Event'
 
     @classmethod
-    def send(cls , *args, **kargs):
+    def send(cls, *args, **kargs):
         """Sends a notification to all the subscribers listening to this event.
         """
         event = cls(*args, **kargs)
@@ -118,12 +118,13 @@ class Event:
         """Converts the current event to a string representation."""
         return f'<{type(self).__name__} at {id(self)}>'
 
+
 class ProcessQueuesRequest(Event):
     """Base event triggering the processing of the queues in EventManager.
 
-    This Event can be inherited by all events expected to trigger the processing
-    of the pending subscriptions, unsubscriptions and notifications in the
-    Event Manager.
+    This Event can be inherited by all events expected to trigger the
+    processing of the pending subscriptions, unsubscriptions and notifications
+    in the Event Manager.
     """
 
     def __init__(self, *args, **kargs):
@@ -135,6 +136,7 @@ class TickEvent(ProcessQueuesRequest):
 
     def __init__(self, *args, **kargs):
         self.name = "Tick Event"
+
 
 class QuitEvent(Event):
     """Event raised to quit the application main loop."""

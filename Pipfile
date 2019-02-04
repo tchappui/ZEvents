@@ -5,6 +5,15 @@ verify_ssl = true
 
 [dev-packages]
 twine = "*"
+pytest = "*"
+pytest-runner = "*"
+sphinx = "*"
+coverage = "*"
+tox = "*"
+flake8 = "*"
+watchdog = "*"
+wheel = "*"
+bumpversion = "*"
 
 [packages]
 

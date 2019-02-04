@@ -4,10 +4,8 @@ ZEvents
 
 Easy to use and generic events system.
 
-
 * Free software: MIT license
 * Documentation: https://zevents.readthedocs.io.
-
 
 Features
 --------
