@@ -1,8 +1,8 @@
 =======
-ZEvents
+zevents
 =======
 
-Easy to use and generic events system.
+Easy to use generic events system.
 
 * Free software: MIT license
 * Documentation: https://zevents.readthedocs.io.
@@ -10,7 +10,11 @@ Easy to use and generic events system.
 Features
 --------
 
-* TODO
+* EventManager class orchestrating subscriptions, unsubscriptions and
+notifications
+* Generic Event class usable to implement custom events
+* Generic TriggerEvent triggering the processing of queues in EventManager
+* Standard events collection: TickEvent, QuitEvent
 
 Credits
 -------
