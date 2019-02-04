@@ -30,7 +30,7 @@ class EventManager:
         """Sends an event notification to all the subscribers."""
         self._notifications.put([type(event), event])
         # Processing of queued subscriptions, unsubscriptions and requests
-        if isinstance(event, ProcessQueuesRequest):
+        if isinstance(event, TriggerEvent):
             self._process_subscriptions()
             self._process_unsubscriptions()
             self._process_notifications()
@@ -90,7 +90,7 @@ class Event:
 
     manager = EventManager()
 
-    def __init__(self, *args, **kargs):
+    def __init__(self):
         """Default constructor."""
         self.name = 'Generic Event'
 
@@ -119,7 +119,7 @@ class Event:
         return f'<{type(self).__name__} at {id(self)}>'
 
 
-class ProcessQueuesRequest(Event):
+class TriggerEvent(Event):
     """Base event triggering the processing of the queues in EventManager.
 
     This Event can be inherited by all events expected to trigger the
@@ -128,18 +128,5 @@ class ProcessQueuesRequest(Event):
     """
 
     def __init__(self, *args, **kargs):
-        self.name = "Process Queues Request Event"
-
-
-class TickEvent(ProcessQueuesRequest):
-    """Event raised by the event loop."""
-
-    def __init__(self, *args, **kargs):
-        self.name = "Tick Event"
-
-
-class QuitEvent(Event):
-    """Event raised to quit the application main loop."""
-
-    def __init__(self, *args, **kargs):
-        self.name = "Quit Event"
+        super().__init__(*args, **kargs)
+        self.name = "Trigger Event"
