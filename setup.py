@@ -35,7 +35,7 @@ setup(
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='zevents',
-    name='zevents',
+    name='tchappui-zevents',
     packages=find_packages(include=['zevents']),
     setup_requires=setup_requirements,
     tests_require=test_requirements,

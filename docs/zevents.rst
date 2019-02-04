@@ -12,6 +12,14 @@ zevents.core module
     :undoc-members:
     :show-inheritance:
 
+zevents.events module
+---------------------
+
+.. automodule:: zevents.events
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

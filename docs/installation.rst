@@ -8,25 +8,32 @@ Installation
 Stable release
 --------------
 
-To install ZEvents, run this command in your terminal:
+To install zevents, run this command in your terminal:
 
 .. code-block:: console
 
     $ pip install zevents
 
-This is the preferred method to install ZEvents, as it will always install the most recent stable release.
+or using pipenv:
 
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
+.. code-block:: console
+
+    $ pipenv install zevents
+
+These are the preferred methods to install zevents, as it will always install the most recent stable release.
+
+If you neither have `pip`_ nor `pipenv`_ installed, this `Python installation guide`_ can guide
 you through the process.
 
 .. _pip: https://pip.pypa.io
+.. _pipenv: https://pipenv.readthedocs.io/en/latest/install/
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
 From sources
 ------------
 
-The sources for ZEvents can be downloaded from the `Github repo`_.
+The sources for zevents can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 

@@ -1,5 +1,5 @@
 =======
-zevents
+ZEvents
 =======
 
 Easy to use generic events system.

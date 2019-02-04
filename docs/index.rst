@@ -1,5 +1,5 @@
-Welcome to ZEvents's documentation!
-======================================
+Welcome to zevents's documentation!
+===================================
 
 .. toctree::
    :maxdepth: 2
