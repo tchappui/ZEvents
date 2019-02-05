@@ -18,7 +18,7 @@ Features
 Install
 -------
 
-.. codeblock:: console
+.. code-block:: console
 
     $ pip install tchappui-zevents
 
