@@ -10,8 +10,7 @@ Easy to use generic events system.
 Features
 --------
 
-* EventManager class orchestrating subscriptions, unsubscriptions and
-notifications
+* EventManager class orchestrating subscriptions, unsubscriptions and notifications
 * Generic Event class usable to implement custom events
 * Generic TriggerEvent triggering the processing of queues in EventManager
 * Standard events collection: TickEvent, QuitEvent
