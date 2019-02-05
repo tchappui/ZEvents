@@ -12,7 +12,7 @@ To install zevents, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install zevents
+    $ pip install tchappui-zevents
 
 or using pipenv:
 
