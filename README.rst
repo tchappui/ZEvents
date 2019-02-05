@@ -15,11 +15,18 @@ Features
 * Generic TriggerEvent triggering the processing of queues in EventManager
 * Standard events collection: TickEvent, QuitEvent
 
+Install
+-------
+
+.. codeblock:: console
+
+    $ pip install tchappui-zevents
+
 Example
 -------
 
 A simple example of how to use ZEvents can be found in the
-[Usage section](file:///Users/tchappui/Dropbox/dev/tchappui/zevents/docs/_build/html/usage.html)
+`Usage section <file:///Users/tchappui/Dropbox/dev/tchappui/zevents/docs/_build/html/usage.html>`_
 of the documentation.
 
 Credits
