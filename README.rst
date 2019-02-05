@@ -26,7 +26,7 @@ Example
 -------
 
 A simple example of how to use ZEvents can be found in the
-`Usage section <file:///Users/tchappui/Dropbox/dev/tchappui/zevents/docs/_build/html/usage.html>`_
+`Usage section <https://zevents.readthedocs.io/en/latest/usage.html>`_
 of the documentation.
 
 Credits
