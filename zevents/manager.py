@@ -8,6 +8,7 @@ import queue
 import weakref
 import inspect
 import threading
+from contextlib import contextmanager
 
 
 class EventManager:
@@ -32,11 +33,13 @@ class EventManager:
     def send(self, event):
         """Sends an event notification to all the subscribers."""
         self._notifications.put([type(event), event])
-        # Process the queued subscriptions, unsubscriptions and requests
-        with self._lock:
-            self._process_requests('subscription')
-            self._process_requests('unsubscription')
-            self._notify()
+        # Process the queued subscription, unsubscription and notification
+        # requests
+        with self._non_blocking_lock() as locked:
+            if locked:
+                self._process_requests('subscriptions')
+                self._process_requests('unsubscriptions')
+                self._notify()
 
     def subscribe(self, event_type, handler):
         """Subscribes a handler function to the notification feed of a given
@@ -53,36 +56,41 @@ class EventManager:
     def _process_requests(self, action):
         """Processes pending subscriptions."""
         # We empty the subscription queue
-        try:
-            while True:
-                event_type, handler = self._subscriptions.get(block=False)
-                ref = weakref.ref
-                if inspect.ismethod(handler) and hasattr(handler, '__self__'):
-                    ref = weakref.WeakMethod
-                weak_handler = ref(handler)
-                # We subscribe the handler to all superclass events
-                for klass in event_type.__mro__:
-                    if action == 'subscription' and issubclass(klass, Event):
-                        self._subscribers[klass][weak_handler] = True
-                    elif (
-                        action == 'unsubscription' and
-                        weak_handler in self._subscribers[klass]
-                    ):
-                    del self._subscribers[klass][weak_handler]
-        except queue.Queue.Empty:
-            pass
+        queue = getattr(self, f'_{action}')
+        while not queue.empty()
+            event_type, handler = queue.get()
+            ref = weakref.ref
+            if inspect.ismethod(handler) and hasattr(handler, '__self__'):
+                ref = weakref.WeakMethod
+            weak_handler = ref(handler)
+            # We subscribe the handler to all superclass events
+            for klass in event_type.__mro__:
+                if action == 'subscriptions' and issubclass(klass, Event):
+                    self._subscribers[klass][weak_handler] = True
+                elif (
+                    action == 'unsubscriptions' and
+                    weak_handler in self._subscribers[klass]
+                ):
+                del self._subscribers[klass][weak_handler]
+
 
     def _notify(self):
         """Processes pending notifications."""
         # We Empty the notification queue
+        while not self._notifications.empty():
+            event_type, event = self._notifications.get()
+            for weak_handler in self._subscribers[event_type]:
+                handler = weak_handler()
+                handler(event)
+
+    @contextmanager
+    def _non_blocking_lock():
+        """Context manager for non-blocking acquisition of self._lock."""
+        locked = self._lock.acquire(blocking=False):
         try:
-            while True:
-                event_type, event = self._notifications.get(block=False)
-                with self._lock:
-                    for weak_handler in self._subscribers[event_type]:
-                        handler = weak_handler()
-                        handler(event)
-        except queue.Queue.Empty:
-            pass
+            yield locked
+        finally:
+            if locked:
+                self._lock.release()
 
 
