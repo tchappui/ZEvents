@@ -4,11 +4,11 @@
 """
 
 from collections import defaultdict, OrderedDict
-import queue
-import weakref
-import inspect
-import threading
 from contextlib import contextmanager
+import inspect
+import queue
+import threading
+import weakref
 
 
 class EventManager:
@@ -27,11 +27,10 @@ class EventManager:
         # Queues for pending subscriptions, unsubscription and notifications
         self._actions = queue.Queue()
 
-    def send(self, event):
+    def notify(self, event):
         """Sends an event notification to all the subscribers."""
-        self._actions.put(['notify', type(event), event])
-        # Process the queued subscription, unsubscription and notification
-        # requests
+        self._actions.put(['_notify', type(event), event])
+        # Process the queued subscriptions, unsubscriptions and notifications
         with self._non_blocking_lock() as locked:
             if locked: self._process_actions()
 
@@ -39,44 +38,50 @@ class EventManager:
         """Subscribes a handler function to the notification feed of a given
         event.
         """
-        self._actions.put(['subscribe', event_type, handler])
+        self._actions.put(['_subscribe', event_type, handler])
 
     def unsubscribe(self, event_type, handler):
         """Unsubscribes a handler function from the notification feed of a
         given event.
         """
-        self._actions.put(['unsubscribe', event_type, handler])
+        self._actions.put(['_unsubscribe', event_type, handler])
 
     def _process_actions(self):
         """Processes pending actions."""
         while not self._actions.empty():
-            action, *args = queue.get()
+            action, *args = self._actions.get()
             getattr(self, action)(*args)
 
-    def subscribe():
-            ref = weakref.ref
-            if inspect.ismethod(handler) and hasattr(handler, '__self__'):
-                ref = weakref.WeakMethod
-            weak_handler = ref(handler)
-            # We subscribe the handler to all superclass events
-            for klass in event_type.__mro__:
-                if action == 'subscriptions' and issubclass(klass, Event):
-                    self._subscribers[klass][weak_handler] = True
-                elif (
-                    action == 'unsubscriptions' and
-                    weak_handler in self._subscribers[klass]
-                ):
-                    del self._subscribers[klass][weak_handler]
+    def _subscribe(self, event_type, handler):
+        """Subscribes an event handler."""
+        weak_handler = self._make_weakref(handler)
+        # We subscribe the handler to all superclass events
+        for klass in event_type.__mro__:
+            if issubclass(klass, Event):
+                self._subscribers[klass][weak_handler] = True
+
+    def _unsubscribe(self, event_type, handler):
+        """Unsubscribes an event handler."""
+        weak_handler = self._make_weakref(handler)
+        if weak_handler in self._subscribers[klass]:
+            del self._subscribers[klass][weak_handler]
 
 
-    def _notify(self):
-        """Processes pending notifications."""
+    def _notify(self, event_type, event):
+        """Notifies subscribers."""
         # We Empty the notification queue
-        while not self._notifications.empty():
-            event_type, event = self._notifications.get()
-            for weak_handler in self._subscribers[event_type]:
-                handler = weak_handler()
-                handler(event)
+        for weak_handler in self._subscribers[event_type]:
+            handler = weak_handler()
+            handler(event)
+
+    def _make_weakref(self, handler):
+        """Builds a weakref to a handler function or method."""
+        # By default, suppose the handler is a function
+        ref = weakref.ref
+        # User WeakMethod if it is a bound method
+        if inspect.ismethod(handler) and hasattr(handler, '__self__'):
+            ref = weakref.WeakMethod
+        return ref(handler)
 
     @contextmanager
     def _non_blocking_lock(self):
@@ -109,7 +114,7 @@ class Event:
         """Sends a notification to all the subscribers listening to this event.
         """
         event = cls(*args, **kargs)
-        cls.manager.send(event)
+        cls.manager.notify(event)
 
     @classmethod
     def subscribe(cls, handler):
@@ -126,6 +131,7 @@ class Event:
 
     @classmethod
     def listen(cls, func):
+        """Decorator used to subscribe to an event."""
         params = list(inspect.signature(func).parameters.keys())
         if len(params) == 1:
             # This is a normal function
