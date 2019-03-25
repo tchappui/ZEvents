@@ -1,5 +1,5 @@
 from zevents.events import TickEvent, QuitEvent
-from zevents.dispatch import listener
+from zevents.dispatch import listener, Listener
 
 @listener
 class KeyboardController:
@@ -19,11 +19,12 @@ class KeyboardController:
         )
         action()
 
-@listener
-class EchoApplication:
+
+class EchoApplication(Listener):
     """Represents the application itself."""
 
     def __init__(self):
+        super().__init__()
         self.running = False
         self.controller = KeyboardController()
 
