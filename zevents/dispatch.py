@@ -5,8 +5,6 @@
 
 from functools import wraps
 
-from .events import TickEvent
-
 
 def listener(cls):
     """Class decorator to mark a class as a zevent listener."""
@@ -19,19 +17,13 @@ def listener(cls):
         func(self, *args, **kwargs)
         # Subscribe methods in __dict__ marked as handler for a given
         # event type
-        for key, method in cls.__dict__.items():
-            if hasattr(method, f"_zevent"):
-                event = method._zevent
-                event.subscribe(getattr(self, key))
+        for key, obj in cls.__dict__.items():
+            if hasattr(obj, "_zevents"):
+                zevents = obj._zevents
+                for zevent in zevents:
+                    zevent.subscribe(getattr(self, key))
 
     # Patching the constructor
     cls.__init__ = new_init
     return cls
 
-
-def handler(event):
-    """Decorator used to mark a method as handler for the given event type."""
-    def decorator(func):
-        setattr(func, "_zevent", event)
-        return func
-    return decorator
