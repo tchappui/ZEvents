@@ -18,7 +18,7 @@ asking the user to enter a few words and sends a Quit event if the user inputs
 a `\\q`::
 
     from zevents.events import TickEvent, QuitEvent
-    from zevents.dispatch import listener, handler
+    from zevents.dispatch import listener
 
     @listener
     class KeyboardController:
@@ -26,13 +26,13 @@ a `\\q`::
 
         # Available actions
         actions = {
-            "\\q": QuitEvent.send,
+            "quit": QuitEvent.send,
         }
 
-        @handler(TickEvent)
+        @TickEvent.listen
         def _on_tick(self, event):
             """Handles the Tick events."""
-            user = input("Say something or enter \q to quit: ")
+            user = input("Say something or enter quit: ")
             action = self.actions.get(
                 user.lower().strip(), lambda: print(user)
             )
@@ -41,7 +41,7 @@ a `\\q`::
 The EchoApplication class could be written as follows::
 
     from zevents.events import TickEvent, QuitEvent
-    from zevents.dispatch import listener, handler
+    from zevents.dispatch import listener
 
     @listener
     class EchoApplication:
@@ -51,7 +51,7 @@ The EchoApplication class could be written as follows::
             self.running = False
             self.controller = KeyboardController()
 
-        @handler(QuitEvent)
+        @QuitEvent.listen
         def _on_quit(self, event):
             """Handles Quit events."""
             self.running = False
