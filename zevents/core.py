@@ -24,41 +24,36 @@ class EventManager:
         # Subscribers dictionnary. Keys are event types. Values are Orderdicts
         # of weakly-referenced functions or methods
         self._subscribers = defaultdict(OrderedDict)
-
         # Queues for pending subscriptions, unsubscription and notifications
-        self._subscriptions = queue.Queue()
-        self._unsubscriptions = queue.Queue()
-        self._notifications = queue.Queue()
+        self._actions = queue.Queue()
 
     def send(self, event):
         """Sends an event notification to all the subscribers."""
-        self._notifications.put([type(event), event])
+        self._actions.put(['notify', type(event), event])
         # Process the queued subscription, unsubscription and notification
         # requests
         with self._non_blocking_lock() as locked:
-            if locked:
-                self._process_requests('subscriptions')
-                self._process_requests('unsubscriptions')
-                self._notify()
+            if locked: self._process_actions()
 
     def subscribe(self, event_type, handler):
         """Subscribes a handler function to the notification feed of a given
         event.
         """
-        self._subscriptions.put([event_type, handler])
+        self._actions.put(['subscribe', event_type, handler])
 
     def unsubscribe(self, event_type, handler):
         """Unsubscribes a handler function from the notification feed of a
         given event.
         """
-        self._unsubscriptions.put([event_type, handler])
+        self._actions.put(['unsubscribe', event_type, handler])
 
-    def _process_requests(self, action):
-        """Processes pending subscriptions."""
-        # We empty the subscription queue
-        queue = getattr(self, f'_{action}')
-        while not queue.empty():
-            event_type, handler = queue.get()
+    def _process_actions(self):
+        """Processes pending actions."""
+        while not self._actions.empty():
+            action, *args = queue.get()
+            getattr(self, action)(*args)
+
+    def subscribe():
             ref = weakref.ref
             if inspect.ismethod(handler) and hasattr(handler, '__self__'):
                 ref = weakref.WeakMethod
