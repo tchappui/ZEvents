@@ -106,8 +106,15 @@ class Event:
     manager = EventManager()
 
     def __init__(self):
-        """Default constructor."""
-        self.name = 'Generic Event'
+        """Initializes new events."""
+        self.name = self._generate_event_name()
+
+    def _generate_event_name(self):
+        """Generates an event name."""
+        parts = re.split(r"event", self.__class__.__name__, flags=re.I)
+        parts = [part.strip() for part in parts if part.strip()]
+        parts = parts + ["Event"] if parts else ["Generic Event"]
+        self.name = " ".join(parts).title()
 
     @classmethod
     def send(cls, *args, **kargs):
