@@ -1,6 +1,14 @@
-from zevents.events import TickEvent, QuitEvent
+from zevents import Event
 from zevents.dispatch import listener, Listener
 
+# We create events by subsclassing the zevents.Event class
+class TickEvent(Event):
+    pass
+
+class QuitEvent(Event):
+    pass
+
+# For a class to be able to listen at zevents, decorate it as listener
 @listener
 class KeyboardController:
     """Controller responsible to handle keyboard events."""
@@ -20,6 +28,7 @@ class KeyboardController:
         action()
 
 
+# For a class to be able to listen at zevents, you can also subclass Listener
 class EchoApplication(Listener):
     """Represents the application itself."""
 
@@ -43,3 +52,4 @@ class EchoApplication(Listener):
 if __name__ == "__main__":
     app = EchoApplication()
     app.run()
+
