@@ -7,6 +7,7 @@ from collections import defaultdict, OrderedDict
 from contextlib import contextmanager
 import inspect
 import queue
+import re
 import threading
 import weakref
 
@@ -114,7 +115,7 @@ class Event:
         parts = re.split(r"event", self.__class__.__name__, flags=re.I)
         parts = [part.strip() for part in parts if part.strip()]
         parts = parts + ["Event"] if parts else ["Generic Event"]
-        self.name = " ".join(parts).title()
+        return " ".join(parts).title()
 
     @classmethod
     def send(cls, *args, **kargs):
@@ -157,4 +158,4 @@ class Event:
 
     def __str__(self):
         """Converts the current event to a string representation."""
-        return f'<{type(self).__name__} at {id(self)}>'
+        return f'[{self.name}]'

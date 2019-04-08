@@ -15,11 +15,20 @@ application using an event-based logic.
 
 The KeyboardController class subscribes to Tick events, reacts to those by
 asking the user to enter a few words and sends a Quit event if the user inputs
-a `\\q`::
+a `quit`::
 
-    from zevents.events import TickEvent, QuitEvent
+    from zevents import Event
     from zevents.dispatch import listener
 
+
+    # We create events by subsclassing the zevents.Event class
+    class TickEvent(Event):
+        pass
+
+    class QuitEvent(Event):
+        pass
+
+    # For a class to be able to listen at zevents, decorate it as listener
     @listener
     class KeyboardController:
         """Controller responsible to handle keyboard events."""
@@ -40,14 +49,16 @@ a `\\q`::
 
 The EchoApplication class could be written as follows::
 
-    from zevents.events import TickEvent, QuitEvent
-    from zevents.dispatch import listener
+    from zevents import Event
+    from zevents.dispatch import Listener
 
-    @listener
-    class EchoApplication:
+
+    # For a class to be able to listen at zevents, you can also subclass Listener
+    class EchoApplication(Listener):
         """Represents the application itself."""
 
         def __init__(self):
+            super().__init__()
             self.running = False
             self.controller = KeyboardController()
 

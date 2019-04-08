@@ -2,6 +2,8 @@
 
 """Top-level package for ZEvents."""
 
-__author__ = """Thierry Chappuis"""
+__author__ = 'Thierry Chappuis'
 __email__ = 'thierry@chappuis.io'
 __version__ = '0.2.7'
+
+from .core import Event
