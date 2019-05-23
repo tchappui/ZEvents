@@ -35,11 +35,11 @@ setup(
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='zevents',
-    name='tchappui-zevents',
+    name='zevents',
     packages=find_packages(include=['zevents']),
     setup_requires=setup_requirements,
     tests_require=test_requirements,
     url='https://github.com/tchappui/zevents',
-    version='0.2.7',
+    version='0.2.9',
     zip_safe=False,
 )
