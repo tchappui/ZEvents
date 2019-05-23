@@ -64,8 +64,9 @@ class EventManager:
     def _unsubscribe(self, event_type, handler):
         """Unsubscribes an event handler."""
         weak_handler = self._make_weakref(handler)
-        if weak_handler in self._subscribers[klass]:
-            del self._subscribers[klass][weak_handler]
+        for klass in event_type.__mro__:
+            if weak_handler in self._subscribers[klass]:
+                del self._subscribers[klass][weak_handler]
 
 
     def _notify(self, event_type, event):
